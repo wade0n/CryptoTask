@@ -1,8 +1,8 @@
 //
 //  ViewFactory.swift
 //
-//  Created on 24.03.2025.
-//  Copyright © 2025 getsquire.com. All rights reserved.
+//
+//  Created by Dmitry Kalashnikov on 24.03.2025.
 //
 
 import Foundation

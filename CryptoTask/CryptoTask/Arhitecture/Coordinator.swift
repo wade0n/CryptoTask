@@ -1,8 +1,7 @@
 //
 //  Coordinator.swift
 //
-//  Created on 24.03.2025.
-//  Copyright © 2025 getsquire.com. All rights reserved.
+//  Created by Dmitry Kalashnikov on 24.03.2025.
 //
 
 import Foundation
@@ -12,7 +11,7 @@ final class Coordinator {
     let compositionRoot: CompostionRoot
     
     var root: some View {
-        compositionRoot.viewFactory.makeCoinListView().environment(createCointListPresenter())
+        createCointListView()
     }
     
     init(compositionRoot: CompostionRoot) {
@@ -21,9 +20,9 @@ final class Coordinator {
     
     //MARK: - Private methods.
     
-    func createCointListPresenter() -> CoinListPresenter {
+    func createCointListView() -> some View {
         let presenter = CoinListPresenter(repository: compositionRoot.coinRepository)
         presenter.start()
-        return presenter
+        return compositionRoot.viewFactory.makeCoinListView().environment(presenter)
     }
 }
