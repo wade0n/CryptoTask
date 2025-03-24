@@ -21,17 +21,7 @@ final class CoinListPresenter: CoinListViewOutPut {
     }
     
     func start() {
-        Task {
-            do {
-                self.coins = try await repository.fetchCoins(page: 1, pageLimit: self.pageLimit)
-                var coinAdapters: [CoinListCellAdapter] = coins.map({ CoinListCellAdapter.coin($0) })
-                coinAdapters.append(.loader)
-                props = .data(coinAdapters)
-            } catch {
-                props = .error(error.localizedDescription)
-            }
-            
-        }
+        loadCoins(page: 1)
     }
     
     //MARK: - CoinListViewOutPut
@@ -42,14 +32,19 @@ final class CoinListPresenter: CoinListViewOutPut {
     }
     
     func loadNext() {
-        var newPage = currentPage + 1
+        loadCoins(page: currentPage + 1)
+    }
+    
+    // MARK: - Private methods.
+    
+    func loadCoins(page: Int) {
         Task {
             do {
-                let coins = try await repository.fetchCoins(page: newPage, pageLimit: 10)
+                let coins = try await repository.fetchCoins(page: page, pageLimit: pageLimit)
                 self.coins.append(contentsOf: coins)
                 var coinAdapters: [CoinListCellAdapter] = self.coins.map({ CoinListCellAdapter.coin($0) })
                 coinAdapters.append(.loader)
-                self.currentPage = newPage
+                self.currentPage = page
                 self.props = .data(coinAdapters)
             } catch {
                 props = .error(error.localizedDescription)
