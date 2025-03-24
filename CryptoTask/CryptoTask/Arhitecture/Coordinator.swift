@@ -7,6 +7,10 @@
 import Foundation
 import SwiftUI
 
+//protocol DetailCoinRouter: AnyObject {
+//    func createDetailView(coin: Coin) -> CoinDetailView
+//}
+
 final class Coordinator {
     let compositionRoot: CompostionRoot
     
@@ -21,11 +25,12 @@ final class Coordinator {
     //MARK: - Private methods.
     
     func createCointListView() -> some View {
-        let presenter = CoinListPresenter(repository: compositionRoot.coinRepository, coordinator: self)
+        let presenter = CoinListPresenter(repository: compositionRoot.coinRepository, router: self)
         return compositionRoot.viewFactory.makeCoinListView().environment(presenter)
     }
     
     func createDetailView(coin: Coin) -> some View {
         compositionRoot.viewFactory.makeCoinDetailView(coin: coin)
     }
+    
 }

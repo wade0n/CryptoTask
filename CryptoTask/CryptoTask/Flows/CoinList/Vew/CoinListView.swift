@@ -39,5 +39,5 @@ struct CoinListView: View {
 }
 
 #Preview {
-    CoinListView().environment(CoinListPresenter(repository: TestCoinRepository(), coordinator: nil))
+    CoinListView().environment(CoinListPresenter(repository: TestCoinRepository(), router: nil))
 }

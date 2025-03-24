@@ -9,18 +9,17 @@ import SwiftUI
 
 @Observable
 final class CoinListPresenter: CoinListViewOutPut {
-    
     var props: CoinListProps
     let repository: CoinRepositoryInterface
-    private weak var coordinator: Coordinator?
+    @ObservationIgnored private weak var router: Coordinator?
     private var currentPage: Int = 1
     private var pageLimit: Int = 10
     private var coins: [Coin] = []
     
-    init(props: CoinListProps = .loading, repository: CoinRepositoryInterface, coordinator: Coordinator?) {
+    init(props: CoinListProps = .loading, repository: CoinRepositoryInterface, router: Coordinator?) {
         self.props = props
         self.repository = repository
-        self.coordinator = coordinator
+        self.router = router
         self.start()
     }
     
@@ -41,7 +40,7 @@ final class CoinListPresenter: CoinListViewOutPut {
     }
     
     func detailSelect(for id: String) -> some View {
-        coordinator?.createDetailView(coin: coins.first(where: { $0.id == id })!)
+        router?.createDetailView(coin: coins.first(where: { $0.id == id }) ?? coins[0])
     }
     
     // MARK: - Private methods.
