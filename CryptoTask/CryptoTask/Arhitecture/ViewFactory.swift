@@ -13,7 +13,7 @@ final class ViewFactory {
         CoinListView()
     }
     
-    public func makeCoinDetailView(coin: Coin) -> CoinDetailView {
-        CoinDetailView(coin: coin)
+    public func makeCoinDetailView() -> some View {
+        CoinDetailView()
     }
 }

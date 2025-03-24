@@ -7,10 +7,6 @@
 import Foundation
 import SwiftUI
 
-//protocol DetailCoinRouter: AnyObject {
-//    func createDetailView(coin: Coin) -> CoinDetailView
-//}
-
 final class Coordinator {
     let compositionRoot: CompostionRoot
     
@@ -30,7 +26,8 @@ final class Coordinator {
     }
     
     func createDetailView(coin: Coin) -> some View {
-        compositionRoot.viewFactory.makeCoinDetailView(coin: coin)
+        let presenter = CoinDetailPresenter(repository: compositionRoot.coinRepository, coin: coin)
+        return compositionRoot.viewFactory.makeCoinDetailView().environment(presenter)
     }
     
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CoinGrapthPoint {
+struct CoinGrapthPoint: Hashable {
     let time: Double
     let value: Double
 }

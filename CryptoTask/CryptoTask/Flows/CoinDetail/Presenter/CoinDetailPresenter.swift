@@ -18,22 +18,26 @@ final class CoinDetailPresenter {
         self.repository = repository
         self.coin = coin
         self.viewModal = .init(imageUrlString: coin.image, name: coin.name, graphAdapter: .loading)
+        self.start()
     }
     
     func start() {
         fetchGraph(for: coin.id)
     }
     
-    //MARK: - Private methods
+    // MARK: - Private methods
     private func fetchGraph(for coinId: String) {
         Task {
             do {
                 let data = try await repository.fetchGraphPoints(for: coinId)
                 var points = [CoinGrapthPoint]()
                 let dayOffset = Date().timeIntervalSince1970 - 24 * 60 * 60
+                var counter = Double(0)
                 for numbers in data.prices {
-                    let point = CoinGrapthPoint(time: numbers[0] - dayOffset, value: numbers[1])
+                    let point = CoinGrapthPoint(time: counter, value: numbers[1])
+                   // print(point.time)
                     points.append(point)
+                    counter += 1
                 }
                 
                 

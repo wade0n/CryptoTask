@@ -8,36 +8,54 @@ import SwiftUI
 import Charts
 
 struct CoinDetailView: View {
-    let coin: Coin
-    @State private var marketData: MarketData?
-    = .init(prices: [
-        [1,1], [10, 10] , [20, 20], [30, 30]
-    ])
+    @Environment(CoinDetailPresenter.self) private var output
 
     var body: some View {
         VStack {
-            if let marketData = marketData {
+            switch output.viewModal.graphAdapter {
+            case let .data(points):
                 Chart {
-                    ForEach(marketData.prices, id: \.self) { price in
+                    ForEach(points, id: \.time) { point in
                         LineMark(
-                            x: .value("Time", price[0]),
-                            y: .value("Price", price[1])
+                            x: .value("Time", point.time),
+                            y: .value("Price", point.value)
                         )
+                        .foregroundStyle(.red)
                     }
                 }
-                .foregroundColor(.red)
-                .frame(height: 300)
-                .padding()
-            } else {
+                .chartYScale(domain: 84_000...90_000)
+                .chartXScale(domain: points[0].time...(points.last?.time ?? Double(Int.max)))
+//                .foregroundColor(.red)
+//                .frame(height: 300)
+//                .padding()
+            case .loading:
                 ProgressView()
+            case let .error(message):
+                ErrorView(erorrMessage: message) {
+                    
+                }
             }
+            
+//            if let marketData = marketData {
+//                Chart {
+//                    ForEach(marketData.prices, id: \.self) { price in
+//                        LineMark(
+//                            x: .value("Time", price[0]),
+//                            y: .value("Price", price[1])
+//                        )
+//                    }
+//                }
+//                .foregroundColor(.red)
+//                .frame(height: 300)
+//                .padding()
+//            } else {
+//                ProgressView()
+//            }
 
-            Text(coin.name)
-                .font(.title)
-            Text("$\(coin.currentPrice, specifier: "%.2f")")
+            Text("$\(output.coin.currentPrice, specifier: "%.2f")")
                 .font(.headline)
         }
-        .navigationTitle(coin.name)
+        .navigationTitle(output.coin.name)
         .padding()
 //        .onAppear {
 //            CoinGeckoService.shared.fetchMarketData(for: coin.id) { fetchedData in
@@ -48,3 +66,8 @@ struct CoinDetailView: View {
 //        }
     }
 }
+
+#Preview {
+    CoinDetailView().environment(CoinDetailPresenter(repository: TestCoinRepository(), coin: .init(id: "dasfasf", symbol: "USD", name: "usdt", currentPrice: 2343, priceChangePercentage24H: 34, image: "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400")))
+}
+
