@@ -43,14 +43,9 @@ final class CoinDetailPresenter {
                         minValue = value
                     }
                     
-                    
+                    /// timestamp from backAPI is in miliseconds, should convert it to seconds.
                     let point = CoinGrapthPoint(date: Date(timeIntervalSince1970: numbers[0]/1000), value: value)
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.timeStyle = DateFormatter.Style.medium //Set time style
-                    dateFormatter.dateStyle = DateFormatter.Style.medium //Set date style
-                    dateFormatter.timeZone = .current
-
-                    print(point.date, "   ", dateFormatter.string(from: point.date))
+                   
                     points.append(point)
                 }
                 
