@@ -44,7 +44,7 @@ final class CoinDetailPresenter {
                     }
                     
                     
-                    let point = CoinGrapthPoint(date: Date(timeIntervalSince1970: numbers[0]), value: value)
+                    let point = CoinGrapthPoint(date: Date(timeIntervalSince1970: numbers[0]/1000), value: value)
                     let dateFormatter = DateFormatter()
                     dateFormatter.timeStyle = DateFormatter.Style.medium //Set time style
                     dateFormatter.dateStyle = DateFormatter.Style.medium //Set date style

@@ -34,6 +34,9 @@ struct CoinListView: View {
                 }
             }
         }
+        .onAppear {
+            output.start()
+        }
 
     }
 }

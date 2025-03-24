@@ -20,7 +20,6 @@ final class CoinListPresenter: CoinListViewOutPut {
         self.props = props
         self.repository = repository
         self.router = router
-        self.start()
     }
     
     func start() {

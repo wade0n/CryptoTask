@@ -62,6 +62,9 @@ struct CoinDetailView: View {
             Spacer()
         }
         .padding()
+        .onAppear {
+            output.start()
+        }
     }
 }
 
