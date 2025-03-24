@@ -22,7 +22,6 @@ final class Coordinator {
     
     func createCointListView() -> some View {
         let presenter = CoinListPresenter(repository: compositionRoot.coinRepository)
-        presenter.start()
         return compositionRoot.viewFactory.makeCoinListView().environment(presenter)
     }
 }
