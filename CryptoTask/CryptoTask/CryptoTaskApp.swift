@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct CryptoTaskApp: App {
+    let coordinator = Coordinator(compositionRoot: CompostionRoot())
+    
     var body: some Scene {
         WindowGroup {
-            CoinListView()
+            coordinator.root
         }
     }
 }

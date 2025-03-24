@@ -9,13 +9,13 @@ import Foundation
 
 
 // MARK: - Coin Model
-struct Coin: Identifiable, Codable {
+struct Coin: Identifiable, Decodable {
     let id: String
     let symbol: String
     let name: String
     let currentPrice: Double
     let priceChangePercentage24H: Double?
-    let image: String // Add this field
+    let image: String
 
     enum CodingKeys: String, CodingKey {
         case id, symbol, name, image
@@ -25,6 +25,6 @@ struct Coin: Identifiable, Codable {
 }
 
 // MARK: - Market Data Model
-struct MarketData: Codable {
+struct MarketData: Decodable {
     let prices: [[Double]]
 }
