@@ -5,7 +5,7 @@
 //  Created by Dmitry Kalashnikov on 24.03.2025.
 //
 
-
+import SwiftUI
 
 protocol CoinListViewInput {
     func fill(coins: [Coin])
@@ -13,8 +13,11 @@ protocol CoinListViewInput {
 }
 
 protocol CoinListViewOutPut {
+    associatedtype DetailView: View
+    
     func retryAction()
     func loadNext()
+    func detailSelect(for id: String) -> DetailView
 }
 
 

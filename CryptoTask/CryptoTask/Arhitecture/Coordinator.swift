@@ -21,7 +21,11 @@ final class Coordinator {
     //MARK: - Private methods.
     
     func createCointListView() -> some View {
-        let presenter = CoinListPresenter(repository: compositionRoot.coinRepository)
+        let presenter = CoinListPresenter(repository: compositionRoot.coinRepository, coordinator: self)
         return compositionRoot.viewFactory.makeCoinListView().environment(presenter)
+    }
+    
+    func createDetailView(coin: Coin) -> some View {
+        compositionRoot.viewFactory.makeCoinDetailView(coin: coin)
     }
 }
