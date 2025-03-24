@@ -12,22 +12,46 @@ struct CoinDetailView: View {
 
     var body: some View {
         VStack {
-            switch output.viewModal.graphAdapter {
-            case let .data(points):
-                Chart {
-                    ForEach(points, id: \.time) { point in
-                        LineMark(
-                            x: .value("Time", point.time),
-                            y: .value("Price", point.value)
-                        )
-                        .foregroundStyle(.red)
+            HStack {
+                AsyncImage(url: URL(string: output.viewModal.imageUrlString)) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 80, height: 80)
+                    case .failure:
+                        Image(systemName: "xmark.circle")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 80, height: 80)
+                            .foregroundColor(.red)
+                    @unknown default:
+                        EmptyView()
                     }
                 }
-                .chartYScale(domain: 84_000...90_000)
-                .chartXScale(domain: points[0].time...(points.last?.time ?? Double(Int.max)))
-//                .foregroundColor(.red)
-//                .frame(height: 300)
-//                .padding()
+                .frame(width: 80, height: 80)
+                Text(output.coin.name)
+                    .font(.largeTitle)
+                Spacer()
+            }
+            switch output.viewModal.graphAdapter {
+            case let .data(modal):
+                Chart {
+                    ForEach(modal.points, id: \.date) { point in
+                        LineMark(
+                            x: .value("Time",  point.date),
+                            y: .value("$ \(point.value)", point.value)
+                        )
+                        .foregroundStyle(output.coin.priceChangePercentage24H ?? 0 > 0 ? .green : .red)
+                    }
+                }
+                .chartYScale(domain: modal.minValue...modal.maxValue)
+                .chartXScale(domain: modal.points[0].date...(modal.points.last?.date ?? Date()))
+                .frame(width: 350, height: 200)
+                .padding(32)
             case .loading:
                 ProgressView()
             case let .error(message):
@@ -35,35 +59,9 @@ struct CoinDetailView: View {
                     
                 }
             }
-            
-//            if let marketData = marketData {
-//                Chart {
-//                    ForEach(marketData.prices, id: \.self) { price in
-//                        LineMark(
-//                            x: .value("Time", price[0]),
-//                            y: .value("Price", price[1])
-//                        )
-//                    }
-//                }
-//                .foregroundColor(.red)
-//                .frame(height: 300)
-//                .padding()
-//            } else {
-//                ProgressView()
-//            }
-
-            Text("$\(output.coin.currentPrice, specifier: "%.2f")")
-                .font(.headline)
+            Spacer()
         }
-        .navigationTitle(output.coin.name)
         .padding()
-//        .onAppear {
-//            CoinGeckoService.shared.fetchMarketData(for: coin.id) { fetchedData in
-//                if let fetchedData = fetchedData {
-//                    marketData = fetchedData
-//                }
-//            }
-//        }
     }
 }
 

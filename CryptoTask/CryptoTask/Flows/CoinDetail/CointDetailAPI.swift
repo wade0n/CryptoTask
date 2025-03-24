@@ -8,12 +8,18 @@
 import Foundation
 
 struct CoinGrapthPoint: Hashable {
-    let time: Double
+    let date: Date
     let value: Double
 }
 
+struct CoinGraphModal {
+    let points: [CoinGrapthPoint]
+    let minValue: Double
+    let maxValue: Double
+}
+
 enum CointDetailGraphAdapter {
-    case data([CoinGrapthPoint])
+    case data(CoinGraphModal)
     case loading
     case error(String)
 }

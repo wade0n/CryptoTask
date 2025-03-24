@@ -18,7 +18,6 @@ final class CoinDetailPresenter {
         self.repository = repository
         self.coin = coin
         self.viewModal = .init(imageUrlString: coin.image, name: coin.name, graphAdapter: .loading)
-        self.start()
     }
     
     func start() {
@@ -31,17 +30,32 @@ final class CoinDetailPresenter {
             do {
                 let data = try await repository.fetchGraphPoints(for: coinId)
                 var points = [CoinGrapthPoint]()
-                let dayOffset = Date().timeIntervalSince1970 - 24 * 60 * 60
-                var counter = Double(0)
+    
+                var maxValue: Double = 0
+                var minValue: Double = Double(Int.max)
+    
                 for numbers in data.prices {
-                    let point = CoinGrapthPoint(time: counter, value: numbers[1])
-                   // print(point.time)
+                    let value: Double = numbers[1]
+                    if value > maxValue {
+                        maxValue = value
+                    }
+                    if value < minValue {
+                        minValue = value
+                    }
+                    
+                    
+                    let point = CoinGrapthPoint(date: Date(timeIntervalSince1970: numbers[0]), value: value)
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.timeStyle = DateFormatter.Style.medium //Set time style
+                    dateFormatter.dateStyle = DateFormatter.Style.medium //Set date style
+                    dateFormatter.timeZone = .current
+
+                    print(point.date, "   ", dateFormatter.string(from: point.date))
                     points.append(point)
-                    counter += 1
                 }
                 
                 
-                viewModal.graphAdapter = .data(points)
+                viewModal.graphAdapter = .data(.init(points: points, minValue: minValue, maxValue: maxValue))
             } catch {
                 viewModal.graphAdapter = .error(error.localizedDescription)
             }
