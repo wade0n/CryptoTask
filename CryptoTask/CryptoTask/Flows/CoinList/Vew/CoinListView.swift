@@ -11,21 +11,25 @@ struct CoinListView: View {
     @Environment(CoinListPresenter.self) private var output
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             switch(output.props) {
             case let .data(coins):
                 List(coins) { adapter in
                     switch adapter {
                     case let .coin(coin):
-                        NavigationLink(destination: output.detailSelect(for: coin.id)) {
+                        NavigationLink(value: coin.id , label: {
                             CoinListCell(coin: coin)
-                        }
+                        })
                     case .loader:
                         LoadMoreView(message: "Loading next") {
                             output.loadNext()
                         }
                     }
-                }.navigationTitle("Top coins")
+                }
+                .navigationDestination(for: String.self) { identifier in
+                    output.detailSelect(for:  identifier)
+                }
+                .navigationTitle("Top coins")
             case .loading:
                 ProgressView()
             case let .error(message):
@@ -37,7 +41,6 @@ struct CoinListView: View {
         .onAppear {
             output.start()
         }
-
     }
 }
 
