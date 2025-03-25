@@ -9,10 +9,10 @@ import Foundation
 import SwiftUI
 
 @Observable
-final class CoinDetailPresenter {
+final class CoinDetailPresenter: CoinDetailOutPut {
     var viewModal: CoinDetailModal
-    let repository: CoinRepositoryInterface
-    let coin: Coin
+    private let repository: CoinRepositoryInterface
+    private let coin: Coin
     
     init(repository: CoinRepositoryInterface, coin:  Coin) {
         self.repository = repository
@@ -50,7 +50,12 @@ final class CoinDetailPresenter {
                 }
                 
                 
-                viewModal.graphAdapter = .data(.init(points: points, minValue: minValue, maxValue: maxValue))
+                viewModal.graphAdapter = .data(.init(
+                    points: points,
+                    minValue: minValue,
+                    maxValue: maxValue,
+                    isNegative: points.first?.value ?? 0 >= points.last?.value ?? 0
+                ))
             } catch {
                 viewModal.graphAdapter = .error(error.localizedDescription)
             }

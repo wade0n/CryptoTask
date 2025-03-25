@@ -7,6 +7,8 @@
 import Foundation
 import SwiftUI
 
+
+/// These is tree view Arch. The root is coordinator, it created other screens
 final class Coordinator {
     let compositionRoot: CompostionRoot
     
@@ -19,7 +21,7 @@ final class Coordinator {
     }
     
     //MARK: - Private methods.
-    
+    /// These are constuct methods.
     func createCointListView() -> some View {
         let presenter = CoinListPresenter(repository: compositionRoot.coinRepository, router: self)
         return compositionRoot.viewFactory.makeCoinListView().environment(presenter)

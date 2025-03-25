@@ -6,6 +6,7 @@
 
 import Foundation
 
+/// Composition Root is placeholder for all services, repositories, managers.
 final class CompostionRoot {
     let networkService: NetworkServiceInterface
     let viewFactory: ViewFactory = .init()

@@ -10,6 +10,8 @@ enum TestError: Error {
     case errorStub
 }
 
+// IMPORTANT: - These is needed only for Preview working.
+
 final class TestCoinRepository: CoinRepositoryInterface {
     func fetchGraphPoints(for coinId: String) async throws -> MarketData {
         .init(prices: [

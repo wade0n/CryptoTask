@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+/// These is Fabric for all SwiftUI Views.
 final class ViewFactory {
     public func makeCoinListView() -> some View {
         CoinListView()

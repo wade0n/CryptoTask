@@ -7,6 +7,10 @@
 
 import Foundation
 
+
+/// These is contract between View and Presenter.
+/// Here is ViewModal and protocols.
+///
 struct CoinGrapthPoint: Hashable {
     let date: Date
     let value: Double
@@ -16,6 +20,7 @@ struct CoinGraphModal {
     let points: [CoinGrapthPoint]
     let minValue: Double
     let maxValue: Double
+    let isNegative: Bool
 }
 
 enum CointDetailGraphAdapter {
@@ -28,4 +33,8 @@ struct CoinDetailModal {
     let imageUrlString: String
     let name: String
     var graphAdapter: CointDetailGraphAdapter
+}
+
+protocol CoinDetailOutPut: AnyObject {
+    func start()
 }

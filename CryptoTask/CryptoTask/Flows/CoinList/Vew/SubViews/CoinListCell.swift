@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct CoinListCell: View {
-    let coin: Coin
+    let coin: CoinViewModal
     
     var body: some View {
             HStack {
-                AsyncImage(url: URL(string: coin.image)) { phase in
+                AsyncImage(url: URL(string: coin.imageURL)) { phase in
                     switch phase {
                     case .empty:
                         ProgressView()
@@ -36,13 +36,13 @@ struct CoinListCell: View {
                 VStack(alignment: .leading) {
                     Text(coin.name)
                         .font(.headline)
-                    Text("$\(coin.currentPrice, specifier: "%.2f")")
+                    Text(coin.price)
                         .font(.subheadline)
                 }
                 Spacer()
-                if let percentageChange = coin.priceChangePercentage24H {
-                    Text("\(percentageChange, specifier: "%.2f")%")
-                        .foregroundColor(percentageChange > 0 ? .green : .red)
+                if let percentageChange = coin.priceChange {
+                    Text(percentageChange.value)
+                        .foregroundColor(percentageChange.isNegative() ? .red : .green)
                 }
             }
     }

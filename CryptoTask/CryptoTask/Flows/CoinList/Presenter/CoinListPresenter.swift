@@ -44,18 +44,35 @@ final class CoinListPresenter: CoinListViewOutPut {
     
     // MARK: - Private methods.
     
-    func loadCoins(page: Int) {
+    private func loadCoins(page: Int) {
         Task {
             do {
                 let coins = try await repository.fetchCoins(page: page, pageLimit: pageLimit)
                 self.coins.append(contentsOf: coins)
-                var coinAdapters: [CoinListCellAdapter] = self.coins.map({ CoinListCellAdapter.coin($0) })
+                var coinAdapters: [CoinListCellAdapter] = self.coins.map({ CoinListCellAdapter.coin(createCoinViewModal($0)) })
                 coinAdapters.append(.loader)
                 currentPage = page
                 props = .data(coinAdapters)
             } catch {
                 props = .error(error.localizedDescription)
             }
+        }
+    }
+    
+    private func createCoinViewModal(_ coin: Coin) -> CoinViewModal {
+        .init(id: coin.id, imageURL: coin.image, price: String(format: "$%.2f", coin.currentPrice), name: coin.name, priceChange: getSignedValueFrom(coin.priceChangePercentage24H))
+    }
+    
+    private func getSignedValueFrom(_ value: Double?) -> SignedValue<String>? {
+        guard let value else {
+            return nil
+        }
+        
+        let stringValue: String = String(format: "%.2f", value) + "%"
+        if value > 0 {
+            return .positive(stringValue)
+        } else {
+            return .negative(stringValue)
         }
     }
 }

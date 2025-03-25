@@ -33,7 +33,7 @@ struct CoinDetailView: View {
                     }
                 }
                 .frame(width: 80, height: 80)
-                Text(output.coin.name)
+                Text(output.viewModal.name)
                     .font(.largeTitle)
                 Spacer()
             }
@@ -45,7 +45,7 @@ struct CoinDetailView: View {
                             x: .value("Time",  point.date),
                             y: .value("$ \(point.value)", point.value)
                         )
-                        .foregroundStyle(output.coin.priceChangePercentage24H ?? 0 > 0 ? .green : .red)
+                        .foregroundStyle(modal.isNegative ? .red : .green)
                     }
                 }
                 .chartYScale(domain: modal.minValue...modal.maxValue)
@@ -72,7 +72,7 @@ struct CoinDetailView: View {
                 ProgressView()
             case let .error(message):
                 ErrorView(erorrMessage: message) {
-                    
+                    output.start()
                 }
             }
             Spacer()
