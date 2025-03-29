@@ -68,7 +68,8 @@ final class CoinListPresenter: CoinListViewOutPut {
     }
     
     private func createCoinViewModal(_ coin: Coin) -> CoinViewModal {
-        .init(id: coin.id, imageURL: coin.image, price: String(format: "$%.2f", coin.currentPrice), name: coin.name, priceChange: getSignedValueFrom(coin.priceChangePercentage24H))
+        let decimalValue: Decimal = .init(coin.currentPrice)
+        return .init(id: coin.id, imageURL: coin.image, price: decimalValue.formatted(.currency(code: "USD")), name: coin.name, priceChange: getSignedValueFrom(coin.priceChangePercentage24H))
     }
     
     private func getSignedValueFrom(_ value: Double?) -> SignedValue<String>? {
@@ -76,7 +77,8 @@ final class CoinListPresenter: CoinListViewOutPut {
             return nil
         }
         
-        let stringValue: String = String(format: "%.2f", value) + "%"
+        let decimalValue: Decimal = .init(Double(Int(value*100)) / 10000)
+        let stringValue: String = decimalValue.formatted(.percent)
         if value > 0 {
             return .positive(stringValue)
         } else {
