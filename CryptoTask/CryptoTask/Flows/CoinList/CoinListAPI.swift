@@ -42,7 +42,7 @@ enum SignedValue<T> {
     }
 }
 
-struct CoinViewModal: Identifiable {
+@MainActor struct CoinViewModal: Identifiable {
     let id: String
     let imageURL: String
     let price: String

@@ -27,13 +27,14 @@ final class CoinDetailPresenter: CoinDetailOutPut {
     // MARK: - Private methods
     private func fetchGraph(for coinId: String) {
         Task {
+            let graphAdapter: CointDetailGraphAdapter
+            
             do {
                 let data = try await repository.fetchGraphPoints(for: coinId)
                 var points = [CoinGrapthPoint]()
     
                 var maxValue: Double = 0
                 var minValue: Double = Double(Int.max)
-                
                 for numbers in data.prices where numbers.count >= 2 {
                     let value: Double = numbers[1]
                     let timestamp = numbers[0]
@@ -51,14 +52,18 @@ final class CoinDetailPresenter: CoinDetailOutPut {
                 }
                 
                 
-                viewModal.graphAdapter = .data(.init(
+                graphAdapter = .data(.init(
                     points: points,
                     minValue: minValue,
                     maxValue: maxValue,
                     isNegative: points.first?.value ?? 0 >= points.last?.value ?? 0
                 ))
             } catch {
-                viewModal.graphAdapter = .error(error.localizedDescription)
+                graphAdapter = .error(error.localizedDescription)
+            }
+            
+            await MainActor.run {
+                self.viewModal.graphAdapter = graphAdapter
             }
         }
     }

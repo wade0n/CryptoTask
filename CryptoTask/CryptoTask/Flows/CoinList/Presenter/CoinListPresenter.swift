@@ -46,15 +46,23 @@ final class CoinListPresenter: CoinListViewOutPut {
     
     private func loadCoins(page: Int) {
         Task {
+            let newProps: CoinListProps
+            let pageCount: Int
             do {
                 let coins = try await repository.fetchCoins(page: page, pageLimit: pageLimit)
                 self.coins.append(contentsOf: coins)
                 var coinAdapters: [CoinListCellAdapter] = self.coins.map({ CoinListCellAdapter.coin(createCoinViewModal($0)) })
                 coinAdapters.append(.loader)
-                currentPage = page
-                props = .data(coinAdapters)
+                pageCount = page
+                newProps = .data(coinAdapters)
             } catch {
-                props = .error(error.localizedDescription)
+                
+                pageCount = 0
+                newProps = .error(error.localizedDescription)
+            }
+            await MainActor.run {
+                self.currentPage = pageCount
+                self.props = newProps
             }
         }
     }
