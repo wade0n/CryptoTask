@@ -33,9 +33,10 @@ final class CoinDetailPresenter: CoinDetailOutPut {
     
                 var maxValue: Double = 0
                 var minValue: Double = Double(Int.max)
-    
-                for numbers in data.prices {
+                
+                for numbers in data.prices where numbers.count >= 2 {
                     let value: Double = numbers[1]
+                    let timestamp = numbers[0]
                     if value > maxValue {
                         maxValue = value
                     }
@@ -44,7 +45,7 @@ final class CoinDetailPresenter: CoinDetailOutPut {
                     }
                     
                     /// timestamp from backAPI is in miliseconds, should convert it to seconds.
-                    let point = CoinGrapthPoint(date: Date(timeIntervalSince1970: numbers[0]/1000), value: value)
+                    let point = CoinGrapthPoint(date: Date(timeIntervalSince1970: timestamp/1000), value: value)
                    
                     points.append(point)
                 }

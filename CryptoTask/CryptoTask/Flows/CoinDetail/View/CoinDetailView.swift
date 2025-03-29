@@ -49,7 +49,7 @@ struct CoinDetailView: View {
                     }
                 }
                 .chartYScale(domain: modal.minValue...modal.maxValue)
-                .chartXScale(domain: modal.points[0].date...(modal.points.last?.date ?? Date()))
+                .chartXScale(domain: (modal.points.first?.date ?? Date())...(modal.points.last?.date ?? Date()))
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .hour, count: 3)) { value in
                         if let date = value.as(Date.self) {
