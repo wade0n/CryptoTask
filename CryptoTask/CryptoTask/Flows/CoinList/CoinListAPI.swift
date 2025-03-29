@@ -35,9 +35,9 @@ enum SignedValue<T> {
     func isNegative() -> Bool {
         switch self {
         case .positive:
-            return true
-        case .negative:
             return false
+        case .negative:
+            return true
         }
     }
 }
