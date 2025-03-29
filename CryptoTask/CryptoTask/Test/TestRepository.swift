@@ -13,6 +13,10 @@ enum TestError: Error {
 // IMPORTANT: - These is needed only for Preview working.
 
 final class TestCoinRepository: CoinRepositoryInterface {
+    func getGrapchCache(for coinId: String) async -> MarketData? {
+        .init(prices: [])
+    }
+    
     func fetchGraphPoints(for coinId: String) async throws -> MarketData {
         .init(prices: [
             [

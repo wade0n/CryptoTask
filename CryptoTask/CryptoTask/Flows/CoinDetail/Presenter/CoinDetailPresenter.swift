@@ -21,6 +21,14 @@ final class CoinDetailPresenter: CoinDetailOutPut {
     }
     
     func start() {
+        Task {
+            if let cachedData = await repository.getGrapchCache(for: coin.id) {
+                let modal = prepareGraphData(data: cachedData)
+                await MainActor.run {
+                    self.viewModal.graphAdapter = .data(modal)
+                }
+            }
+        }
         fetchGraph(for: coin.id)
     }
     
@@ -31,33 +39,9 @@ final class CoinDetailPresenter: CoinDetailOutPut {
             
             do {
                 let data = try await repository.fetchGraphPoints(for: coinId)
-                var points = [CoinGrapthPoint]()
-    
-                var maxValue: Double = 0
-                var minValue: Double = Double(Int.max)
-                for numbers in data.prices where numbers.count >= 2 {
-                    let value: Double = numbers[1]
-                    let timestamp = numbers[0]
-                    if value > maxValue {
-                        maxValue = value
-                    }
-                    if value < minValue {
-                        minValue = value
-                    }
-                    
-                    /// timestamp from backAPI is in miliseconds, should convert it to seconds.
-                    let point = CoinGrapthPoint(date: Date(timeIntervalSince1970: timestamp/1000), value: value)
-                   
-                    points.append(point)
-                }
+                let modal = prepareGraphData(data: data)
                 
-                
-                graphAdapter = .data(.init(
-                    points: points,
-                    minValue: minValue,
-                    maxValue: maxValue,
-                    isNegative: points.first?.value ?? 0 >= points.last?.value ?? 0
-                ))
+                graphAdapter = .data(modal)
             } catch {
                 graphAdapter = .error(error.localizedDescription)
             }
@@ -66,5 +50,34 @@ final class CoinDetailPresenter: CoinDetailOutPut {
                 self.viewModal.graphAdapter = graphAdapter
             }
         }
+    }
+    
+    private func prepareGraphData(data: MarketData) -> CoinGraphModal {
+        var points = [CoinGrapthPoint]()
+
+        var maxValue: Double = 0
+        var minValue: Double = Double(Int.max)
+        for numbers in data.prices where numbers.count >= 2 {
+            let value: Double = numbers[1]
+            let timestamp = numbers[0]
+            if value > maxValue {
+                maxValue = value
+            }
+            if value < minValue {
+                minValue = value
+            }
+            
+            /// timestamp from backAPI is in miliseconds, should convert it to seconds.
+            let point = CoinGrapthPoint(date: Date(timeIntervalSince1970: timestamp/1000), value: value)
+           
+            points.append(point)
+        }
+        
+        return .init(
+            points: points,
+            minValue: minValue,
+            maxValue: maxValue,
+            isNegative: points.first?.value ?? 0 >= points.last?.value ?? 0
+        )
     }
 }

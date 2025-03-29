@@ -9,10 +9,12 @@ import Foundation
 protocol CoinRepositoryInterface: AnyObject {
     func fetchCoins(page: Int, pageLimit: Int) async throws -> [Coin]
     func fetchGraphPoints(for coinId: String) async throws -> MarketData
+    func getGrapchCache(for coinId: String) async -> MarketData?
 }
 
-final class CoinRepository: CoinRepositoryInterface {
+actor CoinRepository: CoinRepositoryInterface {
     let networkService: NetworkServiceInterface
+    private var cache: [String: MarketData] = [:]
     
     init(networkService: NetworkServiceInterface) {
         self.networkService = networkService
@@ -23,6 +25,16 @@ final class CoinRepository: CoinRepositoryInterface {
     }
     
     func fetchGraphPoints(for coinId: String) async throws -> MarketData {
-        try await self.networkService.fetchMarketData(for: coinId)
+        do {
+            let graphData = try await self.networkService.fetchMarketData(for: coinId)
+            cache[coinId] = graphData
+            return graphData
+        } catch {
+            throw error
+        }
+    }
+    
+    func getGrapchCache(for coinId: String) -> MarketData? {
+        cache[coinId]
     }
 }
